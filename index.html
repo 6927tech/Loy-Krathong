@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ลอยกระทงออนไลน์ ๓มิติ | Loy Krathong 3D Online</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Three.js ES Module Import Map -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./node_modules/three/build/three.module.js",
+      "three/addons/": "./node_modules/three/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Three.js Canvas Container -->
+  <div id="canvas-container"></div>
+
+  <!-- UI Overlay Layer -->
+  <div class="ui-layer">
+    
+    <!-- Top Header -->
+    <header class="header-bar interactive">
+      <div class="festival-brand">
+        <span class="brand-icon">🪷</span>
+        <div class="brand-text">
+          <h1>ลอยกระทงออนไลน์ ๓มิติ</h1>
+          <span>วันเพ็ญเดือนสิบสอง ริมสายน้ำสยาม</span>
+        </div>
+      </div>
+
+      <!-- Top Controls: Independent Audios & Cameras -->
+      <div class="top-controls">
+        <!-- Thai BGM Audio Toggle -->
+        <button id="btn-bgm" class="pill-btn active" title="เปิด/ปิดดนตรีไทยเดิม">
+          <span class="btn-icon">🎵</span>
+          <span class="btn-label">เพลงไทย: เปิด</span>
+        </button>
+
+        <!-- Water Ambient Sound Toggle -->
+        <button id="btn-water" class="pill-btn active" title="เปิด/ปิดเสียงสายน้ำไหล">
+          <span class="btn-icon">🌊</span>
+          <span class="btn-label">เสียงน้ำ: เปิด</span>
+        </button>
+
+        <!-- Camera Angle Selector -->
+        <div class="camera-bar">
+          <button class="cam-btn active" data-mode="dock" title="มุมมองทางเดินริมน้ำ">ริมน้ำ</button>
+          <button class="cam-btn" data-mode="pier" title="มุมมองหัวสะพานท่าน้ำ">ท่าน้ำ</button>
+          <button class="cam-btn" data-mode="follow" title="มุมมองติดตามกระทง">ตามกระทง</button>
+          <button class="cam-btn" data-mode="panoramic" title="มุมมองกว้างชมเจดีย์">มุมกว้าง</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Floating Private Blessing Toast (Shown only to player) -->
+    <div id="blessing-toast" class="blessing-toast">
+      <span class="toast-icon">✨</span>
+      <div>
+        <div class="toast-text" id="toast-wish-display">ขอขมาพระแม่คงคา และขอให้มีแต่ความสุขความเจริญ</div>
+        <span class="toast-privacy">🔒 คำอธิษฐานนี้มองเห็นเฉพาะคุณ เพื่อความเป็นส่วนตัว</span>
+      </div>
+    </div>
+
+    <!-- Re-open Launch Card Button (When floating) -->
+    <button id="btn-float-more" class="float-more-btn interactive">
+      🪷 ปล่อยกระทงใบใหม่
+    </button>
+
+    <!-- Bottom Dock: Krathong Selection & Release Panel -->
+    <div id="dock-panel" class="bottom-dock interactive">
+      <div class="card-panel">
+        <h2 class="card-title">เลือกรูปแบบกระทง & ตั้งจิตอธิษฐาน</h2>
+
+        <!-- Choice Grid: 2 Types (Small & Medium) -->
+        <div class="choice-grid">
+          <div class="choice-option selected" data-type="small">
+            <div class="choice-icon">🍃</div>
+            <div class="choice-name">กระทงขนาดเล็ก</div>
+            <div class="choice-desc">ฐานหยวกกล้วย 8 กลีบ ประดับดอกบัวตูม เรียบง่ายกะทัดรัด</div>
+          </div>
+
+          <div class="choice-option" data-type="medium">
+            <div class="choice-icon">🌺</div>
+            <div class="choice-name">กระทงขนาดกลาง</div>
+            <div class="choice-desc">ฐานใบตองซ้อน 2 ชั้น ประดับดอกดาวเรืองทองและดอกบัวบานวิจิตร</div>
+          </div>
+        </div>
+
+        <!-- Wish Input Area -->
+        <div class="wish-section">
+          <textarea id="wish-input" class="wish-input" placeholder="พิมพ์คำอธิษฐาน ขอขมาพระแม่คงคา หรือขอพร..."></textarea>
+          <div class="wish-tags">
+            <button class="tag-btn" data-tag="ขอขมาพระแม่คงคา ปกปักรักษาให้แคล้วคลาด">🌊 ขอขมาพระแม่คงคา</button>
+            <button class="tag-btn" data-tag="ขอให้สุขภาพร่างกายแข็งแรง ปราศจากโรคภัย">💪 สุขภาพแข็งแรง</button>
+            <button class="tag-btn" data-tag="ขอให้การงานราบรื่น ก้าวหน้ารุ่งเรือง">💼 การงานรุ่งเรือง</button>
+            <button class="tag-btn" data-tag="ขอให้ความรักสุขสมหวัง ครอบครัวอบอุ่น">❤️ ความรักสุขสมหวัง</button>
+          </div>
+        </div>
+
+        <!-- Grand Release Button -->
+        <button id="btn-launch" class="launch-btn">
+          <span>ลอยกระทงลงสู่นที</span>
+          <span>🪷</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Main JavaScript Application Entry -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
